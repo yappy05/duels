@@ -1,0 +1,15 @@
+meta {
+  name: user-service
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{API_URL}}/user-health
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

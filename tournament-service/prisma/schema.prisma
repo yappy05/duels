@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_URI_TOURNAMENTS")
+}
+
+model Tournament {
+  id                 String             @id @default(uuid())
+  name               String
+  status             TournamentStatus   @default(CREATED)
+  currentRoundNumber Int                @default(0) @map("current_round_number")
+  maxRounds          Int                @map("max_rounds")
+  countParticipants  Int
+  participants       TournamentUser[]
+  rounds             Round[]
+  results            TournamentResult[]
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  @@map("tournament")
+}
+
+model TournamentUser {
+  id           String   @id @default(uuid())
+  tournamentId String   @map("tournament_id")
+  userId       String   @map("user_id")
+  joinedAt     DateTime @default(now()) @map("joined_at")
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime   @updatedAt @map("updated_at")
+
+  @@unique([tournamentId, userId])
+  @@map("tournament_users")
+}
+
+model Round {
+  id           String      @id @default(uuid())
+  number       Int         @default(1)
+  status       StatusRound @default(ACTIVE)
+  tournamentId String      @map("tournament_id")
+
+  startedAt  DateTime? @map("started_at")
+  finishedAt DateTime? @map("finished_at")
+  updatedAt  DateTime  @updatedAt @map("updated_at")
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  duels      Duel[]
+
+  @@unique([tournamentId, number])
+  @@map("rounds")
+}
+
+model Duel {
+  id        String     @id @default(uuid())
+  status    DuelStatus @default(ACTIVE)
+  roundId   String     @map("round_id")
+  player1Id String     @map("player1_id")
+  player2Id String     @map("player2_id")
+  winnerId  String?    @map("winner_id")
+  round     Round      @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+
+  @@map("duels")
+}
+
+model TournamentResult {
+  id              String   @id @default(uuid())
+  tournamentId    String   @map("tournament_id")
+  userId          String   @map("user_id")
+  position        Int
+  stageEliminated Int?     @map("stage_eliminated") // На каком этапе выбыл
+  finalRating     Int?     @map("final_rating") // Рейтинг после турнира
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  @@unique([tournamentId, userId])
+  @@unique([tournamentId, position])
+  @@map("tournament_results")
+}
+
+enum TournamentStatus {
+  CREATED
+  ACTIVE
+  FINISHED
+}
+
+enum StatusRound {
+  ACTIVE
+  FINISHED
+}
+
+enum DuelStatus {
+  ACTIVE
+  FINISHED
+}

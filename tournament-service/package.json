@@ -1,5 +1,5 @@
 {
-  "name": "api-gateway",
+  "name": "tournament-service",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -22,10 +22,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.14.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "^11.1.6",
     "@nestjs/platform-express": "^11.0.1",
     "@prisma/client": "^6.16.2",
