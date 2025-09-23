@@ -21,4 +21,14 @@ export interface AddParticipantRequestDto {
   userId: string;
 }
 
+export interface AddRoundRequestDto {
+  number: number,
+  tournamentId: string
+}
+
+export interface GenerateDuelsRequestDto {
+  participantIds: string[]
+  roundId: string
+}
+
 export interface TestI {}

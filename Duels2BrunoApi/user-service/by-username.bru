@@ -1,0 +1,19 @@
+meta {
+  name: by-username
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{API_URL}}/user/by-username?username=sergey2
+  body: json
+  auth: inherit
+}
+
+params:query {
+  username: sergey2
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,22 @@
+meta {
+  name: increase-rate
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{API_URL}}/user/increase-rate
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": "a4901970-28da-43d4-997a-5141d255af2f",
+    "points": 120
+  }
+}
+
+settings {
+  encodeUrl: true
+}

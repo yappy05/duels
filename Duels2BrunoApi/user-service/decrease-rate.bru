@@ -1,0 +1,22 @@
+meta {
+  name: decrease-rate
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{API_URL}}/user/decrease-rate
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": "a4901970-28da-43d4-997a-5141d255af2f",
+    "points": 520
+  }
+}
+
+settings {
+  encodeUrl: true
+}
