@@ -1,0 +1,43 @@
+version: '3:7'
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5676:5672
+      - 15676:15672
+    env_file:
+      - .env
+    networks:
+      - my-app
+
+
+  postgres-users:
+    image: postgres:latest
+    ports:
+      - 5436:5432
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_URL=${POSTGRES_URI_USERS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my-app
+
+  postgres-tournaments:
+    image: postgres:latest
+    ports:
+      - 5437:5432
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_URL=${POSTGRES_URI_TOURNAMENTS}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - my-app
+
+volumes:
+  postgres_data:
+networks:
+  my-app:
