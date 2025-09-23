@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AddRoundRequestDto } from '../../../shared/lib/types/src';
+import { AddRoundRequestDto } from 'assignment-duels-types';
 import { DuelService } from '../duel/duel.service';
 
 @Injectable()

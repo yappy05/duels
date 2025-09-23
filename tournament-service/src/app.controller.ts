@@ -1,11 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
-import { CreateTournamentRequestDto } from '../../shared/lib/types';
+import { CreateTournamentRequestDto } from 'assignment-duels-types';
+import { TournamentService } from './tournament/tournament.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(private readonly appService: AppService, private readonly  tournamentService: TournamentService) {}
 
   @MessagePattern('ping')
   public pong() {
@@ -15,8 +16,8 @@ export class AppController {
   //
   //
   //
-  @MessagePattern('tournament/create')
+  @MessagePattern('create-tournament')
   public createTour(dto: CreateTournamentRequestDto) {
-
+    return this.tournamentService.create(dto)
   }
 }

@@ -1,0 +1,23 @@
+meta {
+  name: create
+  type: http
+  seq: 1
+}
+
+post {
+  url: 2c1e33ba-d739-4897-bee7-4e003d0d2c1e{{TOURNAMENT_SERVICE}}/create
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "kings leuge",
+    "countParticipants": 4,
+    "participantIds": ["2c1e33ba-d739-4897-bee7-4e003d0d2c1e", "a4901970-28da-43d4-997a-5141d255af2f", "0fd1f98d-a639-45a0-a5b6-b23440f22f9f", "130aa335-e2d4-4df2-8e75-137a06df5790"]
+  }
+}
+
+settings {
+  encodeUrl: true
+}

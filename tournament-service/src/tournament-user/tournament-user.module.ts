@@ -6,6 +6,6 @@ import { TournamentService } from '../tournament/tournament.service';
 @Module({
   controllers: [TournamentUserController],
   providers: [TournamentUserService],
-  exports: [TournamentService]
+  exports: [TournamentUserService]
 })
 export class TournamentUserModule {}

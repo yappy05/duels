@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { AddParticipantRequestDto } from '../../../shared/lib/types';
+import { AddParticipantRequestDto } from 'assignment-duels-types';
 
 @Injectable()
 export class TournamentUserService {

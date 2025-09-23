@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateTournamentRequestDto } from '../../../shared/lib/types/src';
+import { CreateTournamentRequestDto } from 'assignment-duels-types';
 import { RpcException } from '@nestjs/microservices';
 import { TournamentUserService } from '../tournament-user/tournament-user.service';
-import { AddParticipantRequestDto } from '../../../shared/lib/types';
+import { AddParticipantRequestDto } from 'assignment-duels-types';
 import { RoundService } from '../round/round.service';
 
 @Injectable()
@@ -12,6 +12,7 @@ export class TournamentService {
   }
 
   public async create(dto: CreateTournamentRequestDto) {
+    console.log('start')
     const { name, countParticipants, participantIds } = dto;
     if (participantIds.length !== countParticipants)
       throw new RpcException({
