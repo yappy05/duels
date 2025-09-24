@@ -23,6 +23,9 @@ export class RoundService {
       },
     });
     await this.duelService.create({ participantIds, roundId: round.id });
+
+    // Возвращаем созданный раунд
+    return round;
   }
 
   public async completeRound(roundId: string) {

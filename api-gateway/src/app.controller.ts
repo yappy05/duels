@@ -20,7 +20,9 @@ import {
   UserPointsRequestDto,
   UserRequestDto,
 } from '../../shared/lib/types';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('API Gateway')
 @Controller('api')
 export class AppController {
   constructor(
@@ -31,6 +33,9 @@ export class AppController {
   ) {}
 
   @Get('user-health')
+  @ApiOperation({ summary: 'Проверка здоровья User сервиса' })
+  @ApiResponse({ status: 200, description: 'Сервис доступен' })
+  @ApiResponse({ status: 500, description: 'Сервис недоступен' })
   public userHealth() {
     return firstValueFrom(this.userClient.send('ping', {}));
   }

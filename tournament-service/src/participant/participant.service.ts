@@ -7,6 +7,7 @@ export class ParticipantService {
   constructor(public readonly prismaService: PrismaService) {
   }
   public create(dto: AddParticipantRequestDto[]) {
+    console.log(dto)
     return this.prismaService.tournamentUser.createMany({data: dto})
   }
 }
