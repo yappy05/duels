@@ -19,7 +19,7 @@ import {
   CreateTournamentRequestDto,
   UserPointsRequestDto,
   UserRequestDto,
-} from '../../shared/lib/types';
+} from 'assignment-duels-types';
 import {
   ApiBody,
   ApiOperation,

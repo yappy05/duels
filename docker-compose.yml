@@ -37,6 +37,35 @@ services:
     networks:
       - my-app
 
+  api-gateway:
+    build:
+      context: ./api-gateway  # путь к папке с Dockerfile API Gateway
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    networks:
+      - my-app
+
+  tournament-service:
+    build:
+      context: ./tournament-service  # путь к папке с Dockerfile
+      dockerfile: Dockerfile
+    command: ["sh", "-c", "npx prisma migrate deploy && npm run start:prod"]
+    ports:
+      - "3001:3000"  # внешний порт:внутренний порт
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - postgres-tournaments
+      - api-gateway
+    networks:
+      - my-app
+
 volumes:
   postgres_data:
 networks:
