@@ -1,6 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateTournamentRequestDto, RoundResponseDto, TournamentInfo } from 'assignment-duels-types';
+import {
+  AddRoundRequestDto,
+  CreateTournamentRequestDto,
+  RoundResponseDto,
+  TournamentInfo, TournamentStatus,
+} from 'assignment-duels-types';
 import { RpcException } from '@nestjs/microservices';
 // import { TournamentUserService } from '../tournament-user/tournament-user.service';
 import { AddParticipantRequestDto } from 'assignment-duels-types';
@@ -95,6 +100,7 @@ export class TournamentService {
 
   public async getWinner(dto: TournamentInfo) {
     const results = await this.getResults(dto);
+    console.log(results)
     if (!results[0].userId) {
       return { winnerId: null, message: 'Победитель еще не определен. Турнир не закончился' };
     }
@@ -104,6 +110,22 @@ export class TournamentService {
   public async getParticipants(dto: TournamentInfo) {
     const { tournamentId } = dto;
     return this.prismaService.tournamentUser.findMany({ where: { tournamentId } });
+  }
+
+  public async generateNextRound(dto: AddRoundRequestDto) {
+    const {tournamentId, number} = dto
+    const tournament = await this.prismaService.tournament.findUnique({where: {id: tournamentId}})
+    if (!tournament) throw new RpcException({code: 5, message: 'турнир не найден'})
+    if (tournament.status === TournamentStatus.FINISHED) throw new RpcException(({code: 6, message: 'турнир уже закончен'}))
+    const participants = await this.prismaService.tournamentUser.findMany({where: {tournamentId}})
+    console.log(' participants: ', participants)
+    const results = await this.getResults({tournamentId})
+    console.log(' results: ', results)
+    const restParticipants: string[] = participants.filter((user) => {
+      return !results.some(result => result.userId === user.userId && result.userId !== null)
+    }).map((user) => user.userId)
+    console.log(' restParticipants: ', restParticipants)
+    return  this.roundService.create(dto, restParticipants)
   }
 
 }

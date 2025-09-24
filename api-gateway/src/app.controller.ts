@@ -15,6 +15,7 @@ import {
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import {
+  AddRoundRequestDto,
   CreateTournamentRequestDto,
   UserPointsRequestDto,
   UserRequestDto,
@@ -94,12 +95,14 @@ export class AppController {
       this.tournamentClient.send('get-results', { tournamentId: id }),
     );
   }
+
   @Get('tournament/winner/:id')
   public getWinner(@Param('id') id: string) {
     return firstValueFrom(
       this.tournamentClient.send('get-winner', { tournamentId: id }),
     );
   }
+
   @Get('tournament/participants/:id')
   public getParticipants(@Param('id') id: string) {
     return firstValueFrom(
@@ -119,5 +122,10 @@ export class AppController {
     return firstValueFrom(
       this.tournamentClient.send('complete-round', roundId),
     );
+  }
+
+  @Post('tournament/round/new')
+  public newRound(@Body() dto: AddRoundRequestDto) {
+    return firstValueFrom(this.tournamentClient.send('new-round', dto));
   }
 }

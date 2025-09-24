@@ -11,7 +11,7 @@ import { TournamentService } from '../tournament/tournament.service';
 
 @Injectable()
 export class RoundService {
-  constructor(private readonly prismaService: PrismaService, private readonly duelService: DuelService, private readonly tournamentResultService: TournamentResultService, private readonly tournamentService: TournamentService) {
+  constructor(private readonly prismaService: PrismaService, private readonly duelService: DuelService, private readonly tournamentResultService: TournamentResultService) {
   }
 
   public async create(dto: AddRoundRequestDto, participantIds: string[]) {
@@ -41,15 +41,17 @@ export class RoundService {
       data: { status: RoundStatus.FINISHED },
     });
     const tournament = await this.prismaService.tournament.findUnique({ where: { id: currentRound.tournamentId } });
+
+    const losersResults = await this.tournamentResultService.createResultsForEliminatedPlayers(currentRound.number, currentRound.tournamentId, resultDuels);
     if (tournament && tournament.maxRounds === currentRound.number) {
       await this.prismaService.tournament.update({
         where: { id: tournament.id },
         data: { status: TournamentStatus.FINISHED },
       });
+      if (!resultDuels[0].winnerId) throw new RpcException({})
+      await this.tournamentResultService.createWinneResult(currentRound.number, currentRound.tournamentId, resultDuels[0].winnerId)
       return { winner: resultDuels[0].winnerId };
     }
-    const losersResults = await this.tournamentResultService.createResultsForEliminatedPlayers(currentRound.number, currentRound.tournamentId, resultDuels);
-    // return resultDuels;
     return losersResults;
   }
 
@@ -59,15 +61,15 @@ export class RoundService {
     });
   }
 
-  public async generateNextRound(dto: AddRoundRequestDto) {
-    const {tournamentId, number} = dto
-    const tournament = await this.prismaService.tournament.findUnique({where: {id: tournamentId}})
-    if (!tournament) throw new RpcException({code: 5, message: 'турнир не найден'})
-    if (tournament.status === TournamentStatus.FINISHED) throw new RpcException(({code: 6, message: 'турнир уже закончен'}))
-    const participants = await this.prismaService.tournamentUser.findMany({where: {tournamentId}})
-    const results = await this.tournamentService.getResults({tournamentId})
-    const restParticipants = participants.filter((user) => {
-      return !results.some(loser => loser.id === user.id)
-    })
-  }
+  // public async generateNextRound(dto: AddRoundRequestDto) {
+  //   const {tournamentId, number} = dto
+  //   const tournament = await this.prismaService.tournament.findUnique({where: {id: tournamentId}})
+  //   if (!tournament) throw new RpcException({code: 5, message: 'турнир не найден'})
+  //   if (tournament.status === TournamentStatus.FINISHED) throw new RpcException(({code: 6, message: 'турнир уже закончен'}))
+  //   const participants = await this.prismaService.tournamentUser.findMany({where: {tournamentId}})
+  //   const results = await this.tournamentService.getResults({tournamentId})
+  //   const restParticipants = participants.filter((user) => {
+  //     return !results.some(loser => loser.id === user.id)
+  //   })
+  // }
 }

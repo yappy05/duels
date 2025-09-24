@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { CreateTournamentRequestDto, TournamentInfo } from 'assignment-duels-types';
+import { AddRoundRequestDto, CreateTournamentRequestDto, TournamentInfo } from 'assignment-duels-types';
 import { TournamentService } from './tournament/tournament.service';
 import { RoundService } from './round/round.service';
 
@@ -24,6 +24,12 @@ export class AppController {
   public createTour(dto: CreateTournamentRequestDto) {
     return this.tournamentService.create(dto)
   }
+
+  @MessagePattern('new-round')
+  private createNewRound(dto: AddRoundRequestDto) {
+    return this.tournamentService.generateNextRound(dto)
+  }
+
   @MessagePattern('get-rounds')
   public getAllRounds(dto: TournamentInfo) {
     return this.tournamentService.getRounds(dto)

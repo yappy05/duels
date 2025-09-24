@@ -15,4 +15,9 @@ export class TournamentResultService {
       })
     }))
   }
+  public async createWinneResult(stageEliminated: number, tournamentId: string, winnerId: string) {
+    return this.prismaService.tournamentResult.create({
+      data: {tournamentId, stageEliminated, userId: winnerId}
+    })
+  }
 }
