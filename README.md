@@ -26,15 +26,12 @@ cd duels2
 cp .env.example .env
 # отредактировать .env файл по примеру
 Запуск всех сервисов
-bash
 docker-compose up -d
 Проверить логи и перезапустить при необходимости
-bash
 docker-compose logs
 # Если есть ошибки (сервисы стартовали раньше БД)
 docker-compose restart tournament-service user-service
 Инициализация баз данных
-bash
 # Для tournament-service
 docker exec -it duels2-tournament-service-1 npx prisma generate
 docker exec -it duels2-tournament-service-1 npx prisma db push
