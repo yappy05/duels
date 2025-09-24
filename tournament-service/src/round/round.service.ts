@@ -6,10 +6,12 @@ import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 
 import { TournamentResultService } from '../tournament-result/tournament-result.service';
+import { ParticipantService } from '../participant/participant.service';
+import { TournamentService } from '../tournament/tournament.service';
 
 @Injectable()
 export class RoundService {
-  constructor(private readonly prismaService: PrismaService, private readonly duelService: DuelService, private readonly tournamentResultService: TournamentResultService) {
+  constructor(private readonly prismaService: PrismaService, private readonly duelService: DuelService, private readonly tournamentResultService: TournamentResultService, private readonly tournamentService: TournamentService) {
   }
 
   public async create(dto: AddRoundRequestDto, participantIds: string[]) {
@@ -55,5 +57,17 @@ export class RoundService {
     return this.prismaService.round.findUnique({
       where: { id },
     });
+  }
+
+  public async generateNextRound(dto: AddRoundRequestDto) {
+    const {tournamentId, number} = dto
+    const tournament = await this.prismaService.tournament.findUnique({where: {id: tournamentId}})
+    if (!tournament) throw new RpcException({code: 5, message: 'турнир не найден'})
+    if (tournament.status === TournamentStatus.FINISHED) throw new RpcException(({code: 6, message: 'турнир уже закончен'}))
+    const participants = await this.prismaService.tournamentUser.findMany({where: {tournamentId}})
+    const results = await this.tournamentService.getResults({tournamentId})
+    const restParticipants = participants.filter((user) => {
+      return !results.some(loser => loser.id === user.id)
+    })
   }
 }

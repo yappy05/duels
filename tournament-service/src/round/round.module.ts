@@ -6,7 +6,7 @@ import { TournamentService } from '../tournament/tournament.service';
 
 @Module({
   controllers: [RoundController],
-  providers: [RoundService],
+  providers: [RoundService, TournamentService],
   exports: [RoundService]
 })
 export class RoundModule {}

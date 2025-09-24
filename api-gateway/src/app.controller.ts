@@ -100,6 +100,12 @@ export class AppController {
       this.tournamentClient.send('get-winner', { tournamentId: id }),
     );
   }
+  @Get('tournament/participants/:id')
+  public getParticipants(@Param('id') id: string) {
+    return firstValueFrom(
+      this.tournamentClient.send('get-participants', { tournamentId: id }),
+    );
+  }
 
   //
   //

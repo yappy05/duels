@@ -38,6 +38,10 @@ export class AppController {
   public getWinner(dto: TournamentInfo) {
     return this.tournamentService.getWinner(dto)
   }
+  @MessagePattern('get-participants')
+  private getParticipants(dto: TournamentInfo) {
+    return this.tournamentService.getParticipants(dto)
+  }
 
   //
   //

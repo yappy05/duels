@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateTournamentRequestDto, TournamentInfo } from 'assignment-duels-types';
+import { CreateTournamentRequestDto, RoundResponseDto, TournamentInfo } from 'assignment-duels-types';
 import { RpcException } from '@nestjs/microservices';
 // import { TournamentUserService } from '../tournament-user/tournament-user.service';
 import { AddParticipantRequestDto } from 'assignment-duels-types';
 import { RoundService } from '../round/round.service';
+import { ParticipantService } from '../participant/participant.service';
 
 @Injectable()
 export class TournamentService {
-  constructor(private readonly prismaService: PrismaService, private readonly roundService: RoundService) {
+  constructor(private readonly prismaService: PrismaService, private readonly roundService: RoundService, private readonly participantService: ParticipantService) {
   }
 
   public async create(dto: CreateTournamentRequestDto) {
@@ -34,7 +35,7 @@ export class TournamentService {
       userId,
     }));
 
-    // await this.tournamentUserService.create(participantsData)
+    await this.participantService.create(participantsData);
     await this.roundService.create({ number: 1, tournamentId: tour.id }, participantIds);
     await this.prismaService.tournament.update({
       where: { id: tour.id },
@@ -49,9 +50,20 @@ export class TournamentService {
   }
 
   public async getRounds(dto: TournamentInfo) {
-    return this.prismaService.round.findMany({
+    const tournament = await this.prismaService.tournament.findUnique({ where: { id: dto.tournamentId } });
+    if (!tournament) throw new RpcException({ code: 5, message: 'турнир не найден' });
+    if (!tournament) throw new RpcException({ code: 5, message: 'турнир не найден' });
+    const { maxRounds } = tournament;
+    const activeRounds = await this.prismaService.round.findMany({
       where: { tournamentId: dto.tournamentId },
     });
+    const rounds: any = [];
+    for (let i = 0; i < maxRounds; i++) {
+      const round = activeRounds[i];
+      if (!round) rounds.push({ id: null, number: i+1 , message: 'раунд еще не начался' });
+      else rounds.push(round)
+    }
+    return rounds
   }
 
   public async getResults(dto: TournamentInfo) {
@@ -82,12 +94,16 @@ export class TournamentService {
   }
 
   public async getWinner(dto: TournamentInfo) {
-    const results = await this.getResults(dto)
+    const results = await this.getResults(dto);
     if (!results[0].userId) {
-      return {winnerId: null, message: 'Победитель еще не определен. Турнир не закончился'}
+      return { winnerId: null, message: 'Победитель еще не определен. Турнир не закончился' };
     }
-    return {winnerId: results[0].userId}
+    return { winnerId: results[0].userId };
   }
 
-  public
+  public async getParticipants(dto: TournamentInfo) {
+    const { tournamentId } = dto;
+    return this.prismaService.tournamentUser.findMany({ where: { tournamentId } });
+  }
+
 }
