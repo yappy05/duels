@@ -66,6 +66,38 @@ services:
     networks:
       - my-app
 
+  user-service:
+    build:
+      context: ./user-service  # путь к папке с Dockerfile
+      dockerfile: Dockerfile
+    command: [ "sh", "-c", "npx prisma migrate deploy && npm run start:prod" ]
+    ports:
+      - "3002:3000"  # внешний порт:внутренний порт
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - postgres-tournaments
+      - api-gateway
+    networks:
+      - my-app
+
+  duel-service:
+    build:
+      context: ./duel-service  # путь к папке с Dockerfile
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3000"  # внешний порт:внутренний порт
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+      - postgres-tournaments
+      - api-gateway
+    networks:
+      - my-app
+
+
 volumes:
   postgres_data:
 networks:

@@ -1,8 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { UserRequestDto } from '../../shared/lib/types';
-import { UserPointsRequestDto } from 'assignment-duels-types';
+import { UserPointsRequestDto, UserRequestDto } from 'assignment-duels-types';
 
 @Controller()
 export class AppController {

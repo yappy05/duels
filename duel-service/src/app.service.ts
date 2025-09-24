@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { DuelResponseDto, DuelStatus } from '../../shared/lib/types';
+import { DuelResponseDto, DuelStatus } from 'assignment-duels-types';
 
 @Injectable()
 export class AppService {

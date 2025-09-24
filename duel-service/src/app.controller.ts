@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { MessagePattern } from '@nestjs/microservices';
-import { DuelResponseDto } from '../../shared/lib/types';
+import { DuelResponseDto } from 'assignment-duels-types';
 
 @Controller()
 export class AppController {
