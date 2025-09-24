@@ -39,6 +39,8 @@ docker exec -it duels2-tournament-service-1 npx prisma db push
 # Для user-service
 docker exec -it duels2-user-service-1 npx prisma generate  
 docker exec -it duels2-user-service-1 npx prisma db push
+
+
 Проверка работы
 API Gateway: http://localhost:3000
 Swagger документация: http://localhost:3000/api/docs
