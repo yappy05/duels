@@ -1,0 +1,1 @@
+export const DUEL_CLIENT = 'DUEL_CLIENT'

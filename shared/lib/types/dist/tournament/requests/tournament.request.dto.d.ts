@@ -22,5 +22,13 @@ export interface GenerateDuelsRequestDto {
     participantIds: string[];
     roundId: string;
 }
+export interface AddTournamentUserResult {
+    tournamentId: string;
+    userId: string;
+    stageEliminated: number;
+}
+export interface TournamentInfo {
+    tournamentId: string;
+}
 export interface TestI {
 }

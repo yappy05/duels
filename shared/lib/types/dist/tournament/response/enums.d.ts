@@ -4,12 +4,10 @@ export declare enum TournamentStatus {
     FINISHED = "FINISHED"
 }
 export declare enum RoundStatus {
-    UPCOMING = "UPCOMING",
     ACTIVE = "ACTIVE",
     FINISHED = "FINISHED"
 }
 export declare enum DuelStatus {
-    SCHEDULED = "SCHEDULED",
-    IN_PROGRESS = "IN_PROGRESS",
+    ACTIVE = "ACTIVE",
     FINISHED = "FINISHED"
 }

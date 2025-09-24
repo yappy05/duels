@@ -14,7 +14,11 @@ import {
 } from './common/lib/constants';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { CreateTournamentRequestDto, UserPointsRequestDto, UserRequestDto } from '../../shared/lib/types';
+import {
+  CreateTournamentRequestDto,
+  UserPointsRequestDto,
+  UserRequestDto,
+} from '../../shared/lib/types';
 
 @Controller('api')
 export class AppController {
@@ -65,15 +69,49 @@ export class AppController {
     this.userClient.emit('decrease-rate', dto);
   }
 
+  //
+  //
+  //
+  //
+  //
   //tournament
-  //
-  //
-  //
-  //
-  //
 
   @Post('tournament/create')
   public create(@Body() dto: CreateTournamentRequestDto) {
     return firstValueFrom(this.tournamentClient.send('create-tournament', dto));
+  }
+
+  @Get('tournament/rounds/:id')
+  public getAllRounds(@Param('id') id: string) {
+    return firstValueFrom(
+      this.tournamentClient.send('get-rounds', { tournamentId: id }),
+    );
+  }
+
+  @Get('tournament/results/:id')
+  public getAllResults(@Param('id') id: string) {
+    return firstValueFrom(
+      this.tournamentClient.send('get-results', { tournamentId: id }),
+    );
+  }
+  @Get('tournament/winner/:id')
+  public getWinner(@Param('id') id: string) {
+    return firstValueFrom(
+      this.tournamentClient.send('get-winner', { tournamentId: id }),
+    );
+  }
+
+  //
+  //
+  //
+  //
+  //
+  // round
+
+  @Post('tournament/round/complete')
+  public completeRound(@Body('roundId') roundId: string) {
+    return firstValueFrom(
+      this.tournamentClient.send('complete-round', roundId),
+    );
   }
 }

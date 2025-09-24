@@ -1,23 +1,53 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { MessagePattern } from '@nestjs/microservices';
-import { CreateTournamentRequestDto } from 'assignment-duels-types';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { CreateTournamentRequestDto, TournamentInfo } from 'assignment-duels-types';
 import { TournamentService } from './tournament/tournament.service';
+import { RoundService } from './round/round.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService, private readonly  tournamentService: TournamentService) {}
+  constructor(private readonly appService: AppService, private readonly  tournamentService: TournamentService, private readonly roundService: RoundService) {}
 
   @MessagePattern('ping')
   public pong() {
     return { message: 'pong' };
   }
+  //
+  //
+  //
+  //
+  //
   //tournament
-  //
-  //
-  //
+
   @MessagePattern('create-tournament')
   public createTour(dto: CreateTournamentRequestDto) {
     return this.tournamentService.create(dto)
+  }
+  @MessagePattern('get-rounds')
+  public getAllRounds(dto: TournamentInfo) {
+    return this.tournamentService.getRounds(dto)
+  }
+
+  @MessagePattern('get-results')
+  public getAllResults(dto: TournamentInfo) {
+    return this.tournamentService.getResults(dto)
+  }
+
+  @MessagePattern('get-winner')
+  public getWinner(dto: TournamentInfo) {
+    return this.tournamentService.getWinner(dto)
+  }
+
+  //
+  //
+  //
+  //
+  //
+  // round
+
+  @MessagePattern('complete-round')
+  public completeRound(@Payload() roundId: string) {
+    return this.roundService.completeRound(roundId)
   }
 }

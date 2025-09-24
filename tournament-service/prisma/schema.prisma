@@ -79,7 +79,7 @@ model TournamentResult {
   id              String   @id @default(uuid())
   tournamentId    String   @map("tournament_id")
   userId          String   @map("user_id")
-  position        Int
+  position        Int?
   stageEliminated Int?     @map("stage_eliminated") // На каком этапе выбыл
   finalRating     Int?     @map("final_rating") // Рейтинг после турнира
   createdAt       DateTime @default(now()) @map("created_at")

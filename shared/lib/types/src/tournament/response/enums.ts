@@ -6,14 +6,12 @@ export enum TournamentStatus {
 
 // src/types/round-status.enum.ts
 export enum RoundStatus {
-  UPCOMING = 'UPCOMING',
-  ACTIVE = 'ACTIVE',
-  FINISHED = 'FINISHED',
+    ACTIVE = 'ACTIVE',
+    FINISHED = 'FINISHED'
 }
 
 // src/types/duel-status.enum.ts
 export enum DuelStatus {
-  SCHEDULED = 'SCHEDULED',
-  IN_PROGRESS = 'IN_PROGRESS',
-  FINISHED = 'FINISHED',
+  ACTIVE = 'ACTIVE',
+  FINISHED = 'FINISHED'
 }

@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { GenerateDuelsRequestDto } from 'assignment-duels-types';
+import { DuelResponseDto, GenerateDuelsRequestDto } from 'assignment-duels-types';
+import { RoundService } from '../round/round.service';
+import { DUEL_CLIENT } from './constants/constants';
+import { ClientProxy } from '@nestjs/microservices';
+import { concatMapTo, firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class DuelService {
-  constructor(private readonly prismaService: PrismaService) {
+  constructor(private readonly prismaService: PrismaService, @Inject(DUEL_CLIENT) private readonly duelClient: ClientProxy) {
   }
 
-  public create(dto: GenerateDuelsRequestDto) {
-    const {participantIds, roundId} = dto
+  public async create(dto: GenerateDuelsRequestDto) {
+    const { participantIds, roundId } = dto;
     const pairs = participantIds.reduce<string[][]>((result, item, index) => {
       if (index % 2 === 0) {
         result.push(participantIds.slice(index, index + 2));
@@ -25,5 +29,13 @@ export class DuelService {
     return this.prismaService.duel.createMany({
       data: duels,
     });
+  }
+
+  public async completeDuels(roundId: string) {
+    const duels = await this.prismaService.duel.findMany({
+      where: { roundId },
+    });
+    const resultDuels: DuelResponseDto[] = await firstValueFrom(this.duelClient.send('process', duels));
+    return resultDuels;
   }
 }

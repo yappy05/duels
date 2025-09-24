@@ -10,15 +10,13 @@ var TournamentStatus;
 // src/types/round-status.enum.ts
 var RoundStatus;
 (function (RoundStatus) {
-    RoundStatus["UPCOMING"] = "UPCOMING";
     RoundStatus["ACTIVE"] = "ACTIVE";
     RoundStatus["FINISHED"] = "FINISHED";
 })(RoundStatus || (exports.RoundStatus = RoundStatus = {}));
 // src/types/duel-status.enum.ts
 var DuelStatus;
 (function (DuelStatus) {
-    DuelStatus["SCHEDULED"] = "SCHEDULED";
-    DuelStatus["IN_PROGRESS"] = "IN_PROGRESS";
+    DuelStatus["ACTIVE"] = "ACTIVE";
     DuelStatus["FINISHED"] = "FINISHED";
 })(DuelStatus || (exports.DuelStatus = DuelStatus = {}));
 //# sourceMappingURL=enums.js.map
